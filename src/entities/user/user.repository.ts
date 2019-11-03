@@ -2,14 +2,14 @@ import { getRepository } from 'typeorm';
 import { User, NewUserInput, FilterUser } from './user.entity';
 import { createOptional, SimpleLike } from '../../utils';
 
-const create = (word: NewUserInput): Promise<User> => {
-  const wordRepository = getRepository(User);
-  return wordRepository.save(word);
+const create = (user: NewUserInput): Promise<User> => {
+  const repositorty = getRepository(User);
+  return repositorty.save(user);
 };
 
 const findOne = async (id: number): Promise<User> => {
-  const wordRepository = getRepository(User);
-  return wordRepository.findOne({
+  const repositorty = getRepository(User);
+  return repositorty.findOne({
     where: {
       id,
     },
@@ -17,13 +17,13 @@ const findOne = async (id: number): Promise<User> => {
 };
 
 const findAll = (filter: FilterUser = {}): Promise<User[]> => {
-  const wordRepository = getRepository(User);
+  const repositorty = getRepository(User);
   const where = createOptional<keyof typeof filter>().add(
     'email',
     SimpleLike(filter.email),
   );
 
-  return wordRepository.find({
+  return repositorty.find({
     where,
   });
 };
