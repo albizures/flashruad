@@ -3,34 +3,40 @@ import { ObjectType, Field, Int, ArgsType, InputType } from 'type-graphql';
 
 @Entity()
 @ObjectType()
-@Unique(['word'])
-class Word {
+@Unique(['email'])
+class User {
   @Field((type) => Int)
   @PrimaryGeneratedColumn()
   id: number;
 
   @Field((type) => String)
   @Column('text')
-  word: string;
+  email: string;
+
+  @Column('text')
+  password: string;
 }
 
 @ArgsType()
-class NewWordInput {
+class NewUserInput {
   @Field((type) => String)
-  word: string;
+  email: string;
+
+  @Field((type) => String)
+  password: string;
 }
 
 @ArgsType()
 @InputType()
-class FilterWord {
+class FilterUser {
   @Field((type) => String, { nullable: true })
-  word?: string;
+  email?: string;
 }
 
 @ArgsType()
-class WordListArgs {
-  @Field((type) => FilterWord, { nullable: true })
-  filter: FilterWord;
+class UserListArgs {
+  @Field((type) => FilterUser, { nullable: true })
+  filter: FilterUser;
 }
 
-export { WordListArgs, FilterWord, Word, NewWordInput };
+export { UserListArgs, FilterUser, User, NewUserInput };
