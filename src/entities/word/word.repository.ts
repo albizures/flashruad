@@ -18,9 +18,10 @@ const findOne = async (id: number): Promise<Word> => {
 
 const findAll = (filter: FilterWord = {}): Promise<Word[]> => {
   const wordRepository = getRepository(Word);
-  const where = createOptional<keyof typeof filter>()
-    .add('word', SimpleLike(filter.word))
-    .add('mnemonic', SimpleLike(filter.mnemonic));
+  const where = createOptional<keyof typeof filter>().add(
+    'word',
+    SimpleLike(filter.word),
+  );
 
   return wordRepository.find({
     where,

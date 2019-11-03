@@ -12,19 +12,12 @@ class Word {
   @Field((type) => String)
   @Column('text')
   word: string;
-
-  @Column('text', { nullable: true })
-  @Field((type) => String)
-  mnemonic?: string;
 }
 
 @ArgsType()
 class NewWordInput {
   @Field((type) => String)
   word: string;
-
-  @Field((type) => String)
-  mnemonic?: string;
 }
 
 @ArgsType()
@@ -35,9 +28,6 @@ class FilterWord {
 
   @Field((type) => String, { nullable: true })
   word?: string;
-
-  @Field((type) => String, { nullable: true })
-  mnemonic?: string;
 }
 
 @ArgsType()
