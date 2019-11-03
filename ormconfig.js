@@ -7,7 +7,7 @@ module.exports = {
   database: process.env.DB_NAME || 'flashcards',
   synchronize: process.env.NODE_ENV !== 'production',
   logging: process.env.NODE_ENV !== 'production',
-  entities: ['./src/**/*.entity.ts'],
+  entities: ['./src/entities/internals.ts', './src/**/*.entity.ts'],
   migrations: ['./src/migration/**/*.ts'],
   subscribers: ['./src/subscriber/**/*.ts'],
   cli: {

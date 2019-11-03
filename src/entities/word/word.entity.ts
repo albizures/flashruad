@@ -1,5 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Unique,
+  OneToMany,
+} from 'typeorm';
 import { ObjectType, Field, Int, ArgsType, InputType } from 'type-graphql';
+import { Pronunciation } from '../internals';
 
 @Entity()
 @ObjectType()
@@ -12,6 +19,13 @@ class Word {
   @Field((type) => String)
   @Column('text')
   word: string;
+
+  @Field((type) => [Pronunciation])
+  @OneToMany(
+    (type) => Pronunciation,
+    (pronunciation: Pronunciation) => pronunciation.word,
+  )
+  pronunciations: Pronunciation[];
 }
 
 @ArgsType()

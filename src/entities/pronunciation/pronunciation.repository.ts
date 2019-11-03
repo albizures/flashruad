@@ -16,7 +16,7 @@ const create = (pronunciation: NewPronunciation): Promise<Pronunciation> => {
 const findOne = async (id: number): Promise<Pronunciation> => {
   const repositorty = getRepository(Pronunciation);
   return repositorty.findOne({
-    relations: ['user'],
+    relations: ['user', 'word'],
     where: {
       id,
     },
@@ -33,7 +33,7 @@ const findAll = (
   );
 
   return repositorty.find({
-    relations: ['user'],
+    relations: ['user', 'word'],
     where,
   });
 };

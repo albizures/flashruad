@@ -3,14 +3,14 @@ import { buildSchema } from 'type-graphql';
 import { getMetadataStorage } from 'type-graphql/dist/metadata/getMetadataStorage';
 import WordResolver from '../entities/word/word.resolver';
 import UserResolver from '../entities/user/user.resolver';
-import Pronunciation from '../entities/pronunciation/pronunciation.resolver';
+import PronunciationResolver from '../entities/pronunciation/pronunciation.resolver';
 
 let schema: GraphQLSchema;
 const createSchema = async () => {
   if (!schema) {
     if (process.env.NODE_ENV === 'production') {
       schema = await buildSchema({
-        resolvers: [WordResolver, UserResolver, Pronunciation],
+        resolvers: [WordResolver, UserResolver, PronunciationResolver],
       });
     } else {
       // I'm not proud of this code but it's the only way that I found to make

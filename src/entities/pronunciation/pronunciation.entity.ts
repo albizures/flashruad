@@ -5,9 +5,10 @@ import {
   Unique,
   OneToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { ObjectType, Field, Int, ArgsType, InputType } from 'type-graphql';
-import { User } from '../user/user.entity';
+import { User, Word } from '../internals';
 
 @Entity()
 @ObjectType()
@@ -25,6 +26,11 @@ class Pronunciation {
   @OneToOne((type) => User)
   @JoinColumn()
   user: User;
+
+  @Field((type) => Word)
+  @ManyToOne((type) => Word, (word: Word) => word.pronunciations)
+  @JoinColumn()
+  word: Word;
 }
 
 @ArgsType()
@@ -34,6 +40,9 @@ class NewPronunciationInput {
 
   @Field((type) => Number)
   user: number;
+
+  @Field((type) => Number)
+  word: number;
 }
 
 @ArgsType()
@@ -41,6 +50,9 @@ class NewPronunciationInput {
 class FilterPronunciation {
   @Field((type) => Number, { nullable: true })
   user?: string;
+
+  @Field((type) => Number, { nullable: true })
+  word?: string;
 }
 
 @ArgsType()
