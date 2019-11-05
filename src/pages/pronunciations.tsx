@@ -7,26 +7,20 @@ import AudioField from '../components/AudioField';
 import '../style.css';
 import withApollo from '../components/hocs/withApollo';
 
-const wordGenders = [
-  { value: 'MASCULINE', label: 'Masculine' },
-  { value: 'FEMININE', label: 'Feminine' },
-  { value: 'NEUTER', label: 'Neuter' },
-];
-
 const CREATE_PRONUNCIATION = gql`
   mutation CreatePronunciation($file: String!, $word: Int!) {
     createPronunciation(file: $word, word: $word) {
       id
+      file
     }
   }
 `;
 
-const App = () => {
-  const [createPronunciation, { data: mutationData }] = useMutation(
-    CREATE_PRONUNCIATION,
-  );
+const Pronunciations = () => {
+  const [create, { data: mutationData }] = useMutation(CREATE_PRONUNCIATION);
   const wordRef = React.useRef<HTMLInputElement>();
   const audioRef = React.useRef<File>();
+
   React.useEffect(() => {
     console.log('mutationData', mutationData);
   }, [mutationData]);
@@ -45,19 +39,18 @@ const App = () => {
 
     if (result.ok) {
       const data = await result.json();
-      console.log(data);
+
+      create({
+        variables: {
+          word: Number(wordRef.current.value),
+          file: data.file,
+        },
+      });
+
+      return;
     }
-    //   //   createPronunciation({
-    //   //     variables: {
-    //   //       word: Number(wordRef.current.value),
-    //   //       file: data.file,
-    //   //     },
-    //   //   });
 
-    //   return;
-    // }
-
-    // alert('error');
+    alert('error');
   };
 
   return (
@@ -88,4 +81,4 @@ const App = () => {
   );
 };
 
-export default withApollo(App);
+export default withApollo(Pronunciations);
