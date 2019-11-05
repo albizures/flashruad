@@ -39,7 +39,9 @@ class PronunciationResolver implements ResolverInterface<Pronunciation> {
   ): Promise<Pronunciation> {
     return create({
       ...args,
-      user: await findOneUser(args.user),
+      word: await findOneWord(args.word),
+      // use current user id
+      user: await findOneUser(1),
     });
   }
 
