@@ -4,6 +4,8 @@ import {
   PrimaryGeneratedColumn,
   Unique,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int, ArgsType, InputType } from 'type-graphql';
 import { Pronunciation } from '../internals';
@@ -26,6 +28,12 @@ class Word {
     (pronunciation: Pronunciation) => pronunciation.word,
   )
   pronunciations: Pronunciation[];
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }
 
 @ArgsType()

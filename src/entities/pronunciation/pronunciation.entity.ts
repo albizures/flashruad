@@ -6,6 +6,8 @@ import {
   OneToOne,
   JoinColumn,
   ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int, ArgsType, InputType } from 'type-graphql';
 import { User, Word } from '../internals';
@@ -31,6 +33,12 @@ class Pronunciation {
   @ManyToOne((type) => Word, (word: Word) => word.pronunciations)
   @JoinColumn()
   word: Word;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }
 
 @ArgsType()
