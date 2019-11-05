@@ -1,0 +1,5 @@
+{
+  "env": {
+    "NOW_STORAGE_TOKEN": "@now-storage-token"
+  }
+}
