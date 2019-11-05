@@ -9,7 +9,7 @@ const createClient = (): ApolloClient<NormalizedCacheObject> => {
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
     link: new HttpLink({
-      uri: 'http://localhost:8080/graphql',
+      uri: '/api',
       // credentials: 'same-origin',
       fetch,
     }),

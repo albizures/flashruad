@@ -25,7 +25,6 @@ class PronunciationResolver implements ResolverInterface<Pronunciation> {
   async pronunciationList(
     @Args() args: PronunciationListArgs,
   ): Promise<Pronunciation[]> {
-    findAll(args.filter).then(console.log);
     return findAll(args.filter);
   }
 
