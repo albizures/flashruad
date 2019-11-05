@@ -34,9 +34,11 @@ class Pronunciation {
   @JoinColumn()
   word: Word;
 
+  @Field((type) => Date)
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
+  @Field((type) => Date)
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 }
@@ -45,9 +47,6 @@ class Pronunciation {
 class NewPronunciationInput {
   @Field((type) => String)
   file: string;
-
-  @Field((type) => Number)
-  user: number;
 
   @Field((type) => Number)
   word: number;
