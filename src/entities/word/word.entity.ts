@@ -4,11 +4,12 @@ import {
   PrimaryGeneratedColumn,
   Unique,
   OneToMany,
+  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int, ArgsType, InputType } from 'type-graphql';
-import { Pronunciation } from '../internals';
+import { Pronunciation, Language } from '../internals';
 
 @Entity()
 @ObjectType()
@@ -29,6 +30,10 @@ class Word {
   )
   pronunciations: Pronunciation[];
 
+  @Field((type) => Language)
+  @ManyToOne((type) => Language)
+  language: Language;
+
   @Field((type) => Date)
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
@@ -42,6 +47,9 @@ class Word {
 class NewWordInput {
   @Field((type) => String)
   word: string;
+
+  @Field((type) => Number)
+  language: number;
 }
 
 @ArgsType()

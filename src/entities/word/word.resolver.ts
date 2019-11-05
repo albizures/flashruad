@@ -1,6 +1,15 @@
-import { Resolver, Query, Args, Mutation, Arg } from 'type-graphql';
+import {
+  Resolver,
+  Query,
+  Args,
+  Mutation,
+  Arg,
+  FieldResolver,
+  Root,
+} from 'type-graphql';
 import { Word, WordListArgs, NewWordInput } from './word.entity';
 import { create, findAll, findOne } from './word.repository';
+import { findOne as findOneLanguage } from '../language/language.repository';
 
 @Resolver((of) => Word)
 class WordResolver {
@@ -15,8 +24,11 @@ class WordResolver {
   }
 
   @Mutation((returns) => Word)
-  createWord(@Args() args: NewWordInput): Promise<Word> {
-    return create(args);
+  async createWord(@Args() args: NewWordInput): Promise<Word> {
+    return create({
+      ...args,
+      language: await findOneLanguage(args.language),
+    });
   }
 }
 

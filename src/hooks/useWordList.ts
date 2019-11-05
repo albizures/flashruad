@@ -6,6 +6,9 @@ const LIST = gql`
     wordList {
       id
       word
+      language {
+        name
+      }
     }
   }
 `;

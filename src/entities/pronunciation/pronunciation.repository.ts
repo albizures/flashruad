@@ -1,14 +1,17 @@
 import { getRepository } from 'typeorm';
-import { Pronunciation, FilterPronunciation } from './pronunciation.entity';
+import {
+  Pronunciation,
+  FilterPronunciation,
+  NewPronunciationInput,
+} from './pronunciation.entity';
 import { createOptional, SimpleLike } from '../../utils';
-import { User } from '../user/user.entity';
 import { Word } from '../word/word.entity';
+import { User } from '../user/user.entity';
 
-interface NewPronunciation {
-  file: string;
+type NewPronunciation = Omit<NewPronunciationInput, 'word'> & {
   user: User;
   word: Word;
-}
+};
 
 const create = (pronunciation: NewPronunciation): Promise<Pronunciation> => {
   const repositorty = getRepository(Pronunciation);

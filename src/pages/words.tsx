@@ -3,9 +3,10 @@ import React from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import TextField from '../components/TextField';
-import WordList from '../components/WordList';
 import withApollo from '../components/hocs/withApollo';
 import useWordList from '../hooks/useWordList';
+import List from '../components/List';
+import { Word } from '../types';
 
 const CREATE_WORD = gql`
   mutation CreateWord($word: String!) {
@@ -16,10 +17,21 @@ const CREATE_WORD = gql`
   }
 `;
 
+const renderItem = (item: Word) => {
+  const { id, word, language } = item;
+  console.log(item);
+
+  return (
+    <li key={id}>
+      {word} ({language.name})
+    </li>
+  );
+};
+
 const App = () => {
   const wordRef = React.useRef<HTMLInputElement>();
-  const wordList = useWordList();
-  const { refetch } = wordList;
+  const list = useWordList();
+  const { refetch } = list;
   const [createWord] = useMutation(CREATE_WORD, {
     onCompleted: refetch,
   });
@@ -56,7 +68,7 @@ const App = () => {
               Save
             </button>
           </form>
-          <WordList {...wordList} />
+          <List {...list} renderItem={renderItem} />
         </div>
       </div>
     </div>
