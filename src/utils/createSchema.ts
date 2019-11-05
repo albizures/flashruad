@@ -3,6 +3,7 @@ import { buildSchema } from 'type-graphql';
 import { getMetadataStorage } from 'type-graphql/dist/metadata/getMetadataStorage';
 import WordResolver from '../entities/word/word.resolver';
 import UserResolver from '../entities/user/user.resolver';
+import LanguageResolver from '../entities/language/language.resolver';
 import PronunciationResolver from '../entities/pronunciation/pronunciation.resolver';
 
 let schema: GraphQLSchema;
@@ -10,7 +11,12 @@ const createSchema = async () => {
   if (!schema) {
     if (process.env.NODE_ENV === 'production') {
       schema = await buildSchema({
-        resolvers: [WordResolver, UserResolver, PronunciationResolver],
+        resolvers: [
+          WordResolver,
+          UserResolver,
+          PronunciationResolver,
+          LanguageResolver,
+        ],
       });
     } else {
       // I'm not proud of this code but it's the only way that I found to make
@@ -21,6 +27,7 @@ const createSchema = async () => {
         resolvers: [
           require('../entities/word/word.resolver').default,
           require('../entities/user/user.resolver').default,
+          require('../entities/language/language.resolver').default,
           require('../entities/pronunciation/pronunciation.resolver').default,
         ],
       });

@@ -1,6 +1,7 @@
 import { createConnection as create, getConnectionManager } from 'typeorm';
 import { Word } from '../entities/word/word.entity';
 import { User } from '../entities/user/user.entity';
+import { Language } from '../entities/language/language.entity';
 import { Pronunciation } from '../entities/pronunciation/pronunciation.entity';
 
 const createConnection = async () => {
@@ -20,7 +21,7 @@ const createConnection = async () => {
     database: process.env.DB_NAME || 'flashcards',
     synchronize: process.env.NODE_ENV !== 'production',
     logging: process.env.NODE_ENV !== 'production',
-    entities: [Word, User, Pronunciation],
+    entities: [Word, User, Pronunciation, Language],
   });
 
   return connection;

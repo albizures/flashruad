@@ -23,9 +23,11 @@ class User {
   @Column('text')
   password: string;
 
+  @Field((type) => Date)
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
+  @Field((type) => Date)
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 }

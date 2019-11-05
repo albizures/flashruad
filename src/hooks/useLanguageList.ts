@@ -1,29 +1,25 @@
 import { useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
+import { Language } from '../types';
 
 const LIST = gql`
   query List {
-    wordList {
+    languageList {
       id
-      word
+      name
     }
   }
 `;
 
-interface Entity {
-  id: number;
-  word: string;
-}
-
 interface QueryList {
-  wordList: Entity[];
+  languageList: Language[];
 }
 
 const extractList = (
   loading: boolean,
   error: Error,
   data: QueryList,
-): Entity[] => {
+): Language[] => {
   if (loading) {
     return [];
   }
@@ -31,20 +27,20 @@ const extractList = (
     return [];
   }
 
-  return data.wordList;
+  return data.languageList;
 };
 // TODO: provided an initial data for server side redering purposes
-const useWordList = () => {
+const useLanguageList = () => {
   const { loading, error, data, refetch } = useQuery<QueryList>(LIST);
   const list = extractList(loading, error, data);
 
   return {
     loading,
     error: Boolean(error),
-    errorDetails: JSON.stringify(error),
+    errorDetails: String(error),
     list,
     refetch,
   };
 };
 
-export default useWordList;
+export default useLanguageList;

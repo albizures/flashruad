@@ -3,3 +3,9 @@ export enum Gender {
   FEMININE = 'FEMININE',
   NEUTER = 'NEUTER',
 }
+
+export interface Language {
+  id: number;
+  name: string;
+  code: string;
+}

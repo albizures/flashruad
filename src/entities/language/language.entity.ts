@@ -3,31 +3,26 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Unique,
-  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int, ArgsType, InputType } from 'type-graphql';
-import { Pronunciation } from '../internals';
 
 @Entity()
 @ObjectType()
-@Unique(['word'])
-class Word {
+@Unique(['name', 'code'])
+class Language {
   @Field((type) => Int)
   @PrimaryGeneratedColumn()
   id: number;
 
   @Field((type) => String)
   @Column('text')
-  word: string;
+  name: string;
 
-  @Field((type) => [Pronunciation])
-  @OneToMany(
-    (type) => Pronunciation,
-    (pronunciation: Pronunciation) => pronunciation.word,
-  )
-  pronunciations: Pronunciation[];
+  @Field((type) => String)
+  @Column('text')
+  code: string;
 
   @Field((type) => Date)
   @CreateDateColumn({ type: 'timestamp' })
@@ -39,22 +34,25 @@ class Word {
 }
 
 @ArgsType()
-class NewWordInput {
+class NewLanguageInput {
   @Field((type) => String)
-  word: string;
+  name: string;
+
+  @Field((type) => String)
+  code: string;
 }
 
 @ArgsType()
 @InputType()
-class FilterWord {
+class FilterLanguage {
   @Field((type) => String, { nullable: true })
-  word?: string;
+  name?: string;
 }
 
 @ArgsType()
-class WordListArgs {
-  @Field((type) => FilterWord, { nullable: true })
-  filter: FilterWord;
+class LanguageListArgs {
+  @Field((type) => FilterLanguage, { nullable: true })
+  filter: FilterLanguage;
 }
 
-export { WordListArgs, FilterWord, Word, NewWordInput };
+export { LanguageListArgs, FilterLanguage, Language, NewLanguageInput };
