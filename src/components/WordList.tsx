@@ -37,7 +37,7 @@ const WordList: React.FC<PropTypes> = (props) => {
 
   return (
     <div>
-      <ul>
+      <ul className="list-inside list-disc">
         {list.map(({ id, word }) => {
           return <li key={id}>{word}</li>;
         })}

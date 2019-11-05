@@ -20,24 +20,18 @@ const App = () => {
   const wordRef = React.useRef<HTMLInputElement>();
   const wordList = useWordList();
   const { refetch } = wordList;
-  const [createWord, { data: mutationData }] = useMutation(CREATE_WORD, {
+  const [createWord] = useMutation(CREATE_WORD, {
     onCompleted: refetch,
   });
 
-  React.useEffect(() => {
-    console.log('mutationData', mutationData);
-  }, [mutationData]);
-
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const word = wordRef.current.value.trim();
-    if (word.includes(' ')) {
-      return alert("words shouldn't contain whitespaces");
-    }
+    const word = wordRef.current.value.trim().toLowerCase();
+    wordRef.current.value = '';
 
     createWord({
       variables: {
-        word: wordRef.current.value,
+        word,
       },
     });
   };
