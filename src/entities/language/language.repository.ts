@@ -4,8 +4,6 @@ import { createOptional, SimpleLike } from '../../utils';
 
 const create = (language: NewLanguageInput): Promise<Language> => {
   const repositorty = getRepository(Language);
-  console.log('eeeeeerrr', language);
-
   return repositorty.save(language);
 };
 

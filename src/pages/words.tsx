@@ -3,14 +3,16 @@ import React from 'react';
 import { useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import TextField from '../components/TextField';
+import SelectField from '../components/SelectField';
 import withApollo from '../components/hocs/withApollo';
 import useWordList from '../hooks/useWordList';
 import List from '../components/List';
 import { Word } from '../types';
+import useLanguageList from '../hooks/useLanguageList';
 
 const CREATE_WORD = gql`
-  mutation CreateWord($word: String!) {
-    createWord(word: $word) {
+  mutation CreateWord($word: String!, $language: Float!) {
+    createWord(word: $word, language: $language) {
       id
       word
     }
@@ -19,7 +21,6 @@ const CREATE_WORD = gql`
 
 const renderItem = (item: Word) => {
   const { id, word, language } = item;
-  console.log(item);
 
   return (
     <li key={id}>
@@ -28,22 +29,26 @@ const renderItem = (item: Word) => {
   );
 };
 
-const App = () => {
+const Words = () => {
   const wordRef = React.useRef<HTMLInputElement>();
-  const list = useWordList();
-  const { refetch } = list;
+  const selectRef = React.useRef<HTMLSelectElement>();
+  const wordList = useWordList();
+  const languageList = useLanguageList();
   const [createWord] = useMutation(CREATE_WORD, {
-    onCompleted: refetch,
+    onCompleted: wordList.refetch,
   });
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const word = wordRef.current.value.trim().toLowerCase();
+    const language = Number(selectRef.current.value);
     wordRef.current.value = '';
+    selectRef.current.value = '';
 
     createWord({
       variables: {
         word,
+        language,
       },
     });
   };
@@ -61,6 +66,19 @@ const App = () => {
                 label="Word"
               />
             </div>
+            <div className="mb-4">
+              <SelectField
+                parseChoice={({ name, id }) => ({
+                  label: name,
+                  value: id,
+                })}
+                choices={languageList.list}
+                ref={selectRef}
+                required={false}
+                name="language"
+                label="Language"
+              />
+            </div>
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
@@ -68,11 +86,11 @@ const App = () => {
               Save
             </button>
           </form>
-          <List {...list} renderItem={renderItem} />
+          <List {...wordList} renderItem={renderItem} />
         </div>
       </div>
     </div>
   );
 };
 
-export default withApollo(App);
+export default withApollo(Words);

@@ -57,6 +57,9 @@ class NewWordInput {
 class FilterWord {
   @Field((type) => String, { nullable: true })
   word?: string;
+
+  @Field((type) => Number, { nullable: true })
+  language?: number;
 }
 
 @ArgsType()

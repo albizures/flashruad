@@ -13,6 +13,15 @@ const LIST = gql`
   }
 `;
 
+const LIST_BY_LANGUAGE = gql`
+  query List($language: Int!) {
+    languageList(filter: { language: $language }) {
+      id
+      name
+    }
+  }
+`;
+
 interface Entity {
   id: number;
   word: string;
@@ -37,8 +46,9 @@ const extractList = (
   return data.wordList;
 };
 // TODO: provided an initial data for server side redering purposes
-const useWordList = () => {
-  const { loading, error, data, refetch } = useQuery<QueryList>(LIST);
+const useWordList = (language?: number) => {
+  const query = Number.isInteger(language) ? LIST_BY_LANGUAGE : LIST;
+  const { loading, error, data, refetch } = useQuery<QueryList>(query);
   const list = extractList(loading, error, data);
 
   return {

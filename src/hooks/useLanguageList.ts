@@ -11,6 +11,15 @@ const LIST = gql`
   }
 `;
 
+const LIST_BY_NAME = gql`
+  query List($name: String!) {
+    languageList(filter: { name: $name }) {
+      id
+      name
+    }
+  }
+`;
+
 interface QueryList {
   languageList: Language[];
 }
@@ -27,11 +36,28 @@ const extractList = (
     return [];
   }
 
-  return data.languageList;
+  if (data) {
+    return data.languageList;
+  }
+
+  return [];
 };
+
+const isValidValue = (text: string) => text.trim().length > 0;
+
+const isString = (text: any) => typeof text === 'string';
+
 // TODO: provided an initial data for server side redering purposes
-const useLanguageList = () => {
-  const { loading, error, data, refetch } = useQuery<QueryList>(LIST);
+const useLanguageList = (name?: string) => {
+  const query = isString(name) ? LIST_BY_NAME : LIST;
+
+  const { loading, error, data, refetch } = useQuery<QueryList>(query, {
+    skip: isString(name) ? isValidValue(name) : false,
+    variables: {
+      name,
+    },
+  });
+
   const list = extractList(loading, error, data);
 
   return {
