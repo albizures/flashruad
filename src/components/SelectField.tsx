@@ -1,4 +1,5 @@
 import React from 'react';
+import { useContextForm } from './Form';
 
 type Ref = React.MutableRefObject<HTMLSelectElement>;
 
@@ -13,7 +14,7 @@ interface PropTypes<T> {
   required?: boolean;
   choices: T[];
   disabled?: boolean;
-  ref: Ref;
+  ref?: Ref;
   parseChoice?: (choice: T) => Choice;
 }
 
@@ -25,6 +26,7 @@ const defaultParseChoice = (choice: any): Choice => {
 };
 
 const ChoiceField = <T extends unknown>(props: PropTypes<T>, ref: Ref) => {
+  const { updateField } = useContextForm();
   const {
     name,
     choices,
@@ -36,11 +38,16 @@ const ChoiceField = <T extends unknown>(props: PropTypes<T>, ref: Ref) => {
 
   const getSelectOption = (choice: T): React.ReactNode => {
     const { label, value } = parseChoice(choice);
+
     return (
       <option key={value} value={value}>
         {label}
       </option>
     );
+  };
+
+  const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    updateField(name, event.target.value);
   };
 
   const items = choices.map(getSelectOption);
@@ -56,6 +63,7 @@ const ChoiceField = <T extends unknown>(props: PropTypes<T>, ref: Ref) => {
 
       <div className="relative">
         <select
+          onChange={onChange}
           className="block bg-white shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           disabled={disabled}
           id={name}

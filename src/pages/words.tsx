@@ -4,6 +4,7 @@ import { useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import TextField from '../components/TextField';
 import SelectField from '../components/SelectField';
+import Form, { Fields } from '../components/Form';
 import withApollo from '../components/hocs/withApollo';
 import useWordList from '../hooks/useWordList';
 import List from '../components/List';
@@ -30,20 +31,17 @@ const renderItem = (item: Word) => {
 };
 
 const Words = () => {
-  const wordRef = React.useRef<HTMLInputElement>();
-  const selectRef = React.useRef<HTMLSelectElement>();
   const wordList = useWordList();
   const languageList = useLanguageList();
   const [createWord] = useMutation(CREATE_WORD, {
     onCompleted: wordList.refetch,
   });
 
-  const onSubmit = async (event: React.FormEvent) => {
+  const onSubmit = (event: React.FormEvent, fields: Fields) => {
     event.preventDefault();
-    const word = wordRef.current.value.trim().toLowerCase();
-    const language = Number(selectRef.current.value);
-    wordRef.current.value = '';
-    selectRef.current.value = '';
+
+    const word = fields.word.value;
+    const language = Number(fields.language.value);
 
     createWord({
       variables: {
@@ -57,14 +55,9 @@ const Words = () => {
     <div className="bg-white rounded-t-lg overflow-hidden border-t border-l border-r border-gray-400 p-4 px-3 py-10 bg-gray-200 flex justify-center">
       <div className="w-full max-w-2xl">
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-          <form onSubmit={onSubmit} className="pb-8">
+          <Form onSubmit={onSubmit} className="pb-8">
             <div className="mb-4">
-              <TextField
-                ref={wordRef}
-                required={false}
-                name="word"
-                label="Word"
-              />
+              <TextField required={false} name="word" label="Word" />
             </div>
             <div className="mb-4">
               <SelectField
@@ -73,7 +66,6 @@ const Words = () => {
                   value: id,
                 })}
                 choices={languageList.list}
-                ref={selectRef}
                 required={false}
                 name="language"
                 label="Language"
@@ -85,7 +77,7 @@ const Words = () => {
             >
               Save
             </button>
-          </form>
+          </Form>
           <List {...wordList} renderItem={renderItem} />
         </div>
       </div>
