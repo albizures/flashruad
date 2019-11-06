@@ -5,6 +5,7 @@ import WordResolver from '../entities/word/word.resolver';
 import UserResolver from '../entities/user/user.resolver';
 import LanguageResolver from '../entities/language/language.resolver';
 import PronunciationResolver from '../entities/pronunciation/pronunciation.resolver';
+import NounResolver from '../entities/noun/noun.resolver';
 
 let schema: GraphQLSchema;
 const createSchema = async () => {
@@ -16,6 +17,7 @@ const createSchema = async () => {
           UserResolver,
           PronunciationResolver,
           LanguageResolver,
+          NounResolver,
         ],
       });
     } else {
@@ -29,6 +31,7 @@ const createSchema = async () => {
           require('../entities/user/user.resolver').default,
           require('../entities/language/language.resolver').default,
           require('../entities/pronunciation/pronunciation.resolver').default,
+          require('../entities/noun/noun.resolver').default,
         ],
       });
 

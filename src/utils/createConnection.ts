@@ -3,6 +3,7 @@ import { Word } from '../entities/word/word.entity';
 import { User } from '../entities/user/user.entity';
 import { Language } from '../entities/language/language.entity';
 import { Pronunciation } from '../entities/pronunciation/pronunciation.entity';
+import { Noun } from '../entities/noun/noun.entity';
 
 const createConnection = async () => {
   const connectionManager = getConnectionManager();
@@ -21,7 +22,7 @@ const createConnection = async () => {
     database: process.env.DB_NAME || 'flashcards',
     synchronize: process.env.NODE_ENV !== 'production',
     logging: process.env.NODE_ENV !== 'production',
-    entities: [Word, User, Pronunciation, Language],
+    entities: [Word, User, Pronunciation, Language, Noun],
   });
 
   return connection;

@@ -40,7 +40,7 @@ class PronunciationResolver implements ResolverInterface<Pronunciation> {
     return create({
       ...args,
       word: await findOneWord(args.word),
-      // use current user id
+      //TODO: use current user id
       user: await findOneUser(1),
     });
   }
