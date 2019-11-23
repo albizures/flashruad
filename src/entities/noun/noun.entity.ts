@@ -18,12 +18,7 @@ import {
   registerEnumType,
 } from 'type-graphql';
 import { Pronunciation, Language } from '../internals';
-
-enum Gender {
-  MALE = 'male',
-  FEMALE = 'female',
-  NEUTER = 'neuter',
-}
+import { Gender } from '../../types';
 
 registerEnumType(Gender, {
   name: 'Gender',
@@ -45,7 +40,7 @@ class Noun {
   @Column({
     type: 'enum',
     enum: Gender,
-    default: Gender.MALE,
+    default: Gender.Masculine,
   })
   gender: Gender;
 
@@ -75,6 +70,9 @@ class NewNounInput {
   @Field((type) => Number)
   language: number;
 
+  @Field((type) => Gender)
+  gender: Gender;
+
   @Field((type) => Number)
   pronunciation: number;
 }
@@ -87,9 +85,6 @@ class FilterNoun {
 
   @Field((type) => Number)
   language?: number;
-
-  @Field((type) => Boolean, { nullable: true })
-  isPlural?: boolean;
 
   @Field((type) => Gender, { nullable: true })
   gender?: Gender;

@@ -1,7 +1,7 @@
 export enum Gender {
-  MASCULINE = 'MASCULINE',
-  FEMININE = 'FEMININE',
-  NEUTER = 'NEUTER',
+  Masculine = 'Masculine',
+  Feminine = 'Feminine',
+  Neuter = 'Neuter',
 }
 
 export interface Language {

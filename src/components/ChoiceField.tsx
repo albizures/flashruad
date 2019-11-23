@@ -1,12 +1,13 @@
-import React from "react";
+import React from 'react';
+import { useContextForm } from './Form';
 
-interface Choice {
+export interface Choice {
   value: string | number;
   label: string;
 }
 
 export enum ChoiceType {
-  RADIO = "radio"
+  RADIO = 'radio',
 }
 
 interface PropTypes {
@@ -17,10 +18,15 @@ interface PropTypes {
   type: ChoiceType;
 }
 
-const ChoiceField: React.FC<PropTypes> = props => {
+const ChoiceField: React.FC<PropTypes> = (props) => {
   const { name, type, choices, legend, ...more } = props;
+  const { updateField } = useContextForm();
 
-  const items = choices.map(choice => {
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateField(name, event.target.value);
+  };
+
+  const items = choices.map((choice) => {
     const { label, value } = choice;
     return (
       <div key={choice.value}>
@@ -29,6 +35,7 @@ const ChoiceField: React.FC<PropTypes> = props => {
           htmlFor={name}
         >
           <input
+            onChange={onChange}
             className="mr-2 leading-tight"
             type={type}
             id={value.toString()}

@@ -3,8 +3,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Unique,
-  OneToOne,
-  JoinColumn,
+  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -24,8 +23,10 @@ class Pronunciation {
   file: string;
 
   @Field((type) => User)
-  @OneToOne((type) => User)
-  @JoinColumn()
+  @ManyToOne(
+    (type) => User,
+    (user) => user.pronunciations,
+  )
   user: User;
 
   @Field((type) => Date)

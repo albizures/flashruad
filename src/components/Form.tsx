@@ -11,6 +11,10 @@ export interface Fields {
   [key: string]: Field;
 }
 
+export interface FieldValues {
+  [key: string]: Value;
+}
+
 interface FormContext {
   fields: Fields;
   updateField: (name: string, value: Value) => void;
@@ -21,18 +25,22 @@ const Context = React.createContext<FormContext>({
   updateField() {},
 });
 
-interface Utils {
+interface Form {
+  fields: Fields;
+  values: FieldValues;
   clean: () => void;
 }
 
-type OnSubmit = (event: React.FormEvent, value: Fields, utils: Utils) => void;
+type OnSubmit = (event: React.FormEvent, form: Form) => void;
 
 type PropTypes = {
   onSubmit: OnSubmit;
 } & Omit<React.HTMLProps<HTMLFormElement>, 'onSubmit'>;
 
+const noop = () => undefined;
+
 const Form: React.FC<PropTypes> = (props) => {
-  const { children, onSubmit, ...more } = props;
+  const { children, onSubmit = noop, ...more } = props;
   const [fields, setFields] = React.useState<Fields>({});
   const updateField = (name: string, value: Value) => {
     setFields((fields) => ({
@@ -59,8 +67,17 @@ const Form: React.FC<PropTypes> = (props) => {
   };
 
   const submitHandler = (event: React.FormEvent) => {
-    onSubmit(event, fields, {
+    const values = Object.keys(fields).reduce((vals, name) => {
+      return {
+        ...vals,
+        [name]: fields[name].value,
+      };
+    }, {});
+
+    onSubmit(event, {
       clean,
+      fields,
+      values,
     });
   };
 

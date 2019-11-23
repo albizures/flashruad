@@ -1,45 +1,71 @@
 import '../style.css';
 import React from 'react';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import List from '../components/List';
-import useWordList from '../hooks/useWordList';
 import withApollo from '../components/hocs/withApollo';
 import useLanguageList from '../hooks/useLanguageList';
-import SelectField, { Choice } from '../components/SelectField';
+import SelectField, { Choice as SelectChoice } from '../components/SelectField';
+import ChoiceField, { Choice, ChoiceType } from '../components/ChoiceField';
 import AudioField from '../components/AudioField';
-import Form, { Fields } from '../components/Form';
-import BooleanField from '../components/BooleanField';
-import { Language, Word } from '../types';
+import TextField from '../components/TextField';
+import Form from '../components/Form';
+import { Language, Gender } from '../types';
 
-const CREATE_LANGUAGE = gql`
-  mutation CreateWord($name: String!, $code: String!) {
-    createLanguage(name: $name, code: $code) {
+const CREATE_NOUN = gql`
+  mutation CreateNoun(
+    $word: String!
+    $language: Float!
+    $gender: Gender!
+    $pronunciation: Float!
+  ) {
+    createNoun(
+      word: $word
+      language: $language
+      gender: $gender
+      pronunciation: $pronunciation
+    ) {
       id
-      name
-      code
+      word
     }
   }
 `;
 
-const parseLanguageChoice = ({ id, name }: Language): Choice => ({
+const CREATE_PRONUNCIATION = gql`
+  mutation CreatePronunciation($file: String!) {
+    createPronunciation(file: $file) {
+      id
+    }
+  }
+`;
+
+const genderOptions: Choice[] = Object.keys(Gender).reduce((options, name) => {
+  const gender = Gender[name];
+  return options.concat({
+    label: gender,
+    value: gender,
+  });
+}, []);
+
+const parseLanguageChoice = ({ id, name }: Language): SelectChoice => ({
   label: name,
   value: id,
 });
 
-const parseWordChoice = ({ id, word }: Word): Choice => ({
-  label: word,
-  value: id,
-});
+const checkValue = (value: unknown): boolean => {
+  return (
+    (typeof value === 'number' && !Number.isNaN(value)) ||
+    (typeof value === 'string' && value.trim().length > 0)
+  );
+};
 
 const Nouns = () => {
-  const [language, setLanguage] = React.useState<number>(undefined);
   const audioRef = React.useRef<File>();
   const languageList = useLanguageList();
-  const [create] = useMutation(CREATE_LANGUAGE);
-  const wordList = useWordList(language);
+  const [createNoun] = useMutation(CREATE_NOUN);
+  const { mutate } = useApolloClient();
 
-  const createPronunciation = async (): Promise<string> => {
+  const createPronunciation = async (): Promise<number> => {
     const formData = new FormData();
 
     formData.append('.wav', audioRef.current);
@@ -53,33 +79,43 @@ const Nouns = () => {
       throw new Error('Error creating the pronunciation');
     }
 
-    const data = await result.json();
-    return data.file;
+    const { file } = await result.json();
+    const { data } = await mutate({
+      mutation: CREATE_PRONUNCIATION,
+      variables: {
+        file,
+      },
+    });
+
+    return Number(data.createPronunciation.id);
   };
 
-  const onSubmit = async (event: React.FormEvent, fields: Fields) => {
+  const onSubmit = async (event: React.FormEvent, form: Form) => {
+    const { values } = form;
     event.preventDefault();
 
-    if (!audioRef.current) {
-      return;
+    const { word, language, gender } = values;
+
+    const isValid =
+      checkValue(word) &&
+      checkValue(language) &&
+      checkValue(gender) &&
+      Boolean(audioRef.current);
+
+    if (!isValid) {
+      return alert('All values are required');
     }
 
     const pronunciation = await createPronunciation();
 
-    create({
+    createNoun({
       variables: {
         pronunciation,
-        word: Boolean(fields.word.value),
-        isPlural: fields.isPlural.value,
+        language: Number(language),
+        word,
+        gender,
       },
     });
-  };
-
-  const onLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const language = Number(event.target.value);
-    if (!Number.isNaN(language)) {
-      setLanguage(language);
-    }
   };
 
   return (
@@ -90,7 +126,6 @@ const Nouns = () => {
             <div className="mb-4">
               <SelectField
                 defaultValue=""
-                onChange={onLanguageChange}
                 parseChoice={parseLanguageChoice}
                 choices={languageList.list}
                 name="language"
@@ -101,33 +136,24 @@ const Nouns = () => {
                 </option>
               </SelectField>
             </div>
-            {typeof language === 'number' && (
-              <>
-                <div className="mb-4">
-                  <SelectField
-                    defaultValue=""
-                    parseChoice={parseWordChoice}
-                    choices={wordList.list}
-                    name="word"
-                    label="Word"
-                  >
-                    <option value="" disabled>
-                      -- select a word --
-                    </option>
-                  </SelectField>
-                </div>
-                <div className="mb-4">
-                  <BooleanField label="is plural?" name="isPlural" />
-                </div>
-                <AudioField ref={audioRef} />
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  type="submit"
-                >
-                  Save
-                </button>
-              </>
-            )}
+            <div className="mb-4">
+              <TextField name="word" label="Word" />
+            </div>
+            <div className="mb-4">
+              <ChoiceField
+                choices={genderOptions}
+                type={ChoiceType.RADIO}
+                name="gender"
+                legend="Gender"
+              />
+            </div>
+            <AudioField ref={audioRef} />
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              Save
+            </button>
           </Form>
           {/* <List {...list} renderItem={renderItem} /> */}
         </div>

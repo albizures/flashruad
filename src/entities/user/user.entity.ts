@@ -3,10 +3,12 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Unique,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int, ArgsType, InputType } from 'type-graphql';
+import { Pronunciation } from '../internals';
 
 @Entity()
 @ObjectType()
@@ -22,6 +24,12 @@ class User {
 
   @Column('text')
   password: string;
+
+  @OneToMany(
+    (type) => Pronunciation,
+    (pronunciation) => pronunciation.user,
+  )
+  pronunciations: Pronunciation[];
 
   @Field((type) => Date)
   @CreateDateColumn({ type: 'timestamp' })

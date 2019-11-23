@@ -54,7 +54,7 @@ const handler: RequestHandler = async (req, res) => {
   //   content,
   // });
 
-  return send(res, 200, { file: 'url', name });
+  return send(res, 200, { file: name, name });
 };
 
 export const config = {
