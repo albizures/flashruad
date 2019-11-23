@@ -14,10 +14,10 @@ const LIST = gql`
 `;
 
 const LIST_BY_LANGUAGE = gql`
-  query List($language: Int!) {
-    languageList(filter: { language: $language }) {
+  query List($language: Float!) {
+    wordList(filter: { language: $language }) {
       id
-      name
+      word
     }
   }
 `;
@@ -48,8 +48,14 @@ const extractList = (
 // TODO: provided an initial data for server side redering purposes
 const useWordList = (language?: number) => {
   const query = Number.isInteger(language) ? LIST_BY_LANGUAGE : LIST;
-  const { loading, error, data, refetch } = useQuery<QueryList>(query);
+  const { loading, error, data, refetch } = useQuery<QueryList>(query, {
+    variables: {
+      language,
+    },
+  });
   const list = extractList(loading, error, data);
+
+  console.log(Boolean(error) && error);
 
   return {
     loading,
