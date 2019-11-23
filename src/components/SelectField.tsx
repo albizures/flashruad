@@ -3,7 +3,7 @@ import { useContextForm } from './Form';
 
 type Ref = React.MutableRefObject<HTMLSelectElement>;
 
-interface Choice {
+export interface Choice {
   value: string | number;
   label: string;
 }
@@ -25,7 +25,10 @@ const defaultParseChoice = (choice: any): Choice => {
   };
 };
 
-const ChoiceField = <T extends unknown>(props: PropTypes<T>, ref: Ref) => {
+const ChoiceField = <T extends unknown>(
+  props: PropTypes<T> & React.HTMLProps<HTMLSelectElement>,
+  ref: Ref,
+) => {
   const { updateField } = useContextForm();
   const {
     name,
@@ -33,6 +36,7 @@ const ChoiceField = <T extends unknown>(props: PropTypes<T>, ref: Ref) => {
     label,
     disabled,
     parseChoice = defaultParseChoice,
+    children,
     ...more
   } = props;
 
@@ -71,6 +75,7 @@ const ChoiceField = <T extends unknown>(props: PropTypes<T>, ref: Ref) => {
           ref={ref}
           {...more}
         >
+          {children}
           {items}
         </select>
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">

@@ -1,6 +1,6 @@
 import React from 'react';
 
-type Value = string | number;
+type Value = string | number | boolean;
 
 interface Field {
   name: string;
