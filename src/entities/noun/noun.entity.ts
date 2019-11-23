@@ -3,6 +3,7 @@ import {
   Unique,
   Column,
   OneToOne,
+  ManyToOne,
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
@@ -16,12 +17,12 @@ import {
   ObjectType,
   registerEnumType,
 } from 'type-graphql';
-import { Word, Pronunciation } from '../internals';
+import { Pronunciation, Language } from '../internals';
 
 enum Gender {
   MALE = 'male',
   FEMALE = 'female',
-  NEUTER = 'Neuter',
+  NEUTER = 'neuter',
 }
 
 registerEnumType(Gender, {
@@ -36,10 +37,9 @@ class Noun {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field((type) => Word)
-  @OneToOne((type) => Word)
-  @JoinColumn()
-  word: Word;
+  @Field((type) => String)
+  @Column('text')
+  word: string;
 
   @Field((type) => Gender)
   @Column({
@@ -57,6 +57,10 @@ class Noun {
   @Column((type) => Boolean)
   isPlural: boolean;
 
+  @Field((type) => Language)
+  @ManyToOne((type) => Language)
+  language: Language;
+
   @Field((type) => Date)
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
@@ -68,8 +72,8 @@ class Noun {
 
 @ArgsType()
 class NewNounInput {
-  @Field((type) => Number)
-  word: number;
+  @Field((type) => String)
+  word: string;
 
   @Field((type) => Number)
   language: number;
@@ -81,8 +85,11 @@ class NewNounInput {
 @ArgsType()
 @InputType()
 class FilterNoun {
-  @Field((type) => Number, { nullable: true })
-  word?: number;
+  @Field((type) => String, { nullable: true })
+  word?: string;
+
+  @Field((type) => Number)
+  language?: number;
 
   @Field((type) => Boolean, { nullable: true })
   isPlural?: boolean;

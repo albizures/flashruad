@@ -1,14 +1,17 @@
 import { getRepository } from 'typeorm';
 import { Noun, FilterNoun, NewNounInput } from './noun.entity';
 import { createOptional, SimpleLike } from '../../utils';
-import { Word } from '../word/word.entity';
 import { User } from '../user/user.entity';
 import { Pronunciation } from '../pronunciation/pronunciation.entity';
+import { Language } from '../language/language.entity';
 
-type NewPronunciation = Omit<Omit<NewNounInput, 'word'>, 'pronunciation'> & {
+type NewPronunciation = Omit<
+  Omit<NewNounInput, 'pronunciation'>,
+  'language'
+> & {
   user: User;
-  word: Word;
   pronunciation: Pronunciation;
+  language: Language;
 };
 
 const create = (pronunciation: NewPronunciation): Promise<Noun> => {
@@ -19,7 +22,7 @@ const create = (pronunciation: NewPronunciation): Promise<Noun> => {
 const findOne = async (id: number): Promise<Noun> => {
   const repositorty = getRepository(Noun);
   return repositorty.findOne({
-    relations: ['user', 'word', 'pronunciation'],
+    relations: ['user', 'pronunciation', 'language'],
     where: {
       id,
     },
@@ -28,10 +31,9 @@ const findOne = async (id: number): Promise<Noun> => {
 
 const findAll = (filter: FilterNoun = {}): Promise<Noun[]> => {
   const repositorty = getRepository(Noun);
-  const where = createOptional<keyof typeof filter>().add(
-    'gender',
-    SimpleLike(filter.gender),
-  );
+  const where = createOptional<keyof typeof filter>()
+    .add('gender', SimpleLike(filter.gender))
+    .add('word', SimpleLike(filter.word));
 
   return repositorty.find({
     relations: ['user', 'word', 'pronunciation'],

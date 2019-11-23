@@ -1,8 +1,8 @@
 import { Resolver, Query, Args, Mutation, Arg } from 'type-graphql';
 import { Noun, NounListArgs, NewNounInput } from './noun.entity';
 import { create, findAll, findOne } from './noun.repository';
-import { findOne as findOneWord } from '../word/word.repository';
 import { findOne as findOneUser } from '../user/user.repository';
+import { findOne as findOneLanguage } from '../language/language.repository';
 import { findOne as findOnePronunciation } from '../pronunciation/pronunciation.repository';
 
 @Resolver((of) => Noun)
@@ -21,7 +21,7 @@ class NounResolver {
   async createNoun(@Args() args: NewNounInput): Promise<Noun> {
     return create({
       ...args,
-      word: await findOneWord(args.word),
+      language: await findOneLanguage(args.language),
       pronunciation: await findOnePronunciation(args.pronunciation),
       //TODO: use current user id
       user: await findOneUser(1),
