@@ -3,10 +3,12 @@ import { Noun, FilterNoun, NewNounInput } from './noun.entity';
 import { createOptional, SimpleLike } from '../../utils';
 import { Word } from '../word/word.entity';
 import { User } from '../user/user.entity';
+import { Pronunciation } from '../pronunciation/pronunciation.entity';
 
-type NewPronunciation = Omit<NewNounInput, 'word'> & {
+type NewPronunciation = Omit<Omit<NewNounInput, 'word'>, 'pronunciation'> & {
   user: User;
   word: Word;
+  pronunciation: Pronunciation;
 };
 
 const create = (pronunciation: NewPronunciation): Promise<Noun> => {
@@ -17,7 +19,7 @@ const create = (pronunciation: NewPronunciation): Promise<Noun> => {
 const findOne = async (id: number): Promise<Noun> => {
   const repositorty = getRepository(Noun);
   return repositorty.findOne({
-    relations: ['user', 'word'],
+    relations: ['user', 'word', 'pronunciation'],
     where: {
       id,
     },
@@ -32,7 +34,7 @@ const findAll = (filter: FilterNoun = {}): Promise<Noun[]> => {
   );
 
   return repositorty.find({
-    relations: ['user', 'word'],
+    relations: ['user', 'word', 'pronunciation'],
     where: {
       ...filter,
       ...where,

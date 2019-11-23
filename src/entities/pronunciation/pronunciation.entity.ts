@@ -5,12 +5,11 @@ import {
   Unique,
   OneToOne,
   JoinColumn,
-  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ObjectType, Field, Int, ArgsType, InputType } from 'type-graphql';
-import { User, Word } from '../internals';
+import { User } from '../internals';
 
 @Entity()
 @ObjectType()
@@ -29,11 +28,6 @@ class Pronunciation {
   @JoinColumn()
   user: User;
 
-  @Field((type) => Word)
-  @ManyToOne((type) => Word, (word: Word) => word.pronunciations)
-  @JoinColumn()
-  word: Word;
-
   @Field((type) => Date)
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
@@ -47,9 +41,6 @@ class Pronunciation {
 class NewPronunciationInput {
   @Field((type) => String)
   file: string;
-
-  @Field((type) => Number)
-  word: number;
 }
 
 @ArgsType()
@@ -57,9 +48,6 @@ class NewPronunciationInput {
 class FilterPronunciation {
   @Field((type) => Number, { nullable: true })
   user?: string;
-
-  @Field((type) => Number, { nullable: true })
-  word?: string;
 }
 
 @ArgsType()

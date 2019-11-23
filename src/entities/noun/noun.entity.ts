@@ -1,5 +1,6 @@
 import {
   Entity,
+  Unique,
   Column,
   OneToOne,
   JoinColumn,
@@ -15,7 +16,7 @@ import {
   ObjectType,
   registerEnumType,
 } from 'type-graphql';
-import { Word } from '../internals';
+import { Word, Pronunciation } from '../internals';
 
 enum Gender {
   MALE = 'male',
@@ -29,6 +30,7 @@ registerEnumType(Gender, {
 
 @Entity()
 @ObjectType()
+@Unique(['word'])
 class Noun {
   @Field((type) => Int)
   @PrimaryGeneratedColumn()
@@ -46,6 +48,11 @@ class Noun {
     default: Gender.MALE,
   })
   gender: Gender;
+
+  @Field((type) => Pronunciation)
+  @OneToOne((type) => Pronunciation)
+  @JoinColumn()
+  pronunciation: Pronunciation;
 
   @Column((type) => Boolean)
   isPlural: boolean;
@@ -66,6 +73,9 @@ class NewNounInput {
 
   @Field((type) => Number)
   language: number;
+
+  @Field((type) => Number)
+  pronunciation: number;
 }
 
 @ArgsType()
