@@ -54,9 +54,6 @@ class Noun {
   @JoinColumn()
   pronunciation: Pronunciation;
 
-  @Column((type) => Boolean)
-  isPlural: boolean;
-
   @Field((type) => Language)
   @ManyToOne((type) => Language)
   language: Language;
