@@ -22,7 +22,7 @@
     "@types/micro": "^7.3.3",
     "@zeit/next-css": "^1.0.1",
     "apollo-boost": "^0.4.4",
-    "apollo-server-micro": "^2.9.7",
+    "apollo-server-micro": "^2.14.2",
     "axios": "^0.19.0",
     "bcrypt": "^3.0.6",
     "busboy": "^0.3.1",
